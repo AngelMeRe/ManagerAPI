@@ -1,4 +1,5 @@
 using ManagerAPI.Data;
+using ManagerAPI.Middleware;
 using ManagerAPI.Services;
 using ManagerAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -64,6 +65,9 @@ app.UseCors(builder =>
            .AllowAnyMethod()
            .AllowAnyHeader());
 
+//implementacion de  middlerware
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 //seed de un admin para pruebas
 using (var scope = app.Services.CreateScope())
