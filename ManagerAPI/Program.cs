@@ -53,6 +53,15 @@ builder.Services.AddSingleton<JwtService>();
 
 var app = builder.Build();
 
+//seed de un admin para pruebas
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+    await SeedData.EnsureSeedAsync(db);
+}
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
