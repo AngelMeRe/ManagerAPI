@@ -45,12 +45,14 @@ namespace ManagerAPI.Controllers
                     Name = t.CreatedBy.Name
                 },
 
-                Comments = t.Comments?.Select(c => new TaskResponseDto.CommentDto
+                Comments = t.Comments?.Select(c => new CommentDto
                 {
                     Id = c.Id,
-                    Text = c.Content,
-                    UserId = c.UserId
-                }).ToList() ?? new List<TaskResponseDto.CommentDto>()
+                    Content = c.Content,
+                    UserId = c.UserId,
+                    CreatedAt = c.CreatedAt,
+                    UserName = c.User?.Name
+                }).ToList() ?? new List<CommentDto>()
             })
             .ToList();
 
@@ -64,6 +66,7 @@ namespace ManagerAPI.Controllers
                 .Include(t => t.AssignedTo)
                 .Include(t => t.CreatedBy)
                 .Include(t => t.Comments)
+                    .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null) return NotFound();
@@ -75,12 +78,12 @@ namespace ManagerAPI.Controllers
                 Description = task.Description,
                 Status = task.Status,
                 DueDate = task.DueDate,
-                AssignedTo = task.AssignedTo == null ? null : new SimpleUserDto
+                AssignedTo = task.AssignedTo == null ? null : new TaskResponseDto.SimpleUserDto
                 {
                     Id = task.AssignedTo.Id,
                     Name = task.AssignedTo.Name
                 },
-                CreatedBy = task.CreatedBy == null ? null : new SimpleUserDto
+                CreatedBy = task.CreatedBy == null ? null : new TaskResponseDto.SimpleUserDto
                 {
                     Id = task.CreatedBy.Id,
                     Name = task.CreatedBy.Name
@@ -88,8 +91,10 @@ namespace ManagerAPI.Controllers
                 Comments = task.Comments?.Select(c => new CommentDto
                 {
                     Id = c.Id,
-                    Text = c.Content,
-                    UserId = c.UserId
+                    Content = c.Content,
+                    CreatedAt = c.CreatedAt,
+                    UserId = c.UserId,
+                    UserName = c.User!.Name
                 }).ToList()
             };
 
