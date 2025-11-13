@@ -1,0 +1,495 @@
+{
+	"info": {
+		"_postman_id": "c73cab1c-2eae-4412-a6a1-33efef761ea9",
+		"name": "Manager-API-Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49597619",
+		"_collection_link": "https://josemelchoreyes04-07-04-1924999.postman.co/workspace/cc95f6ad-67aa-4c55-88d8-1686056a7aba/collection/49597619-c73cab1c-2eae-4412-a6a1-33efef761ea9?action=share&source=collection_link&creator=49597619"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "LoginAuth",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "ResultadoLogin",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"Admin123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_ur}}/api/auth/login",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 19:21:08 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpZCI6IjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbiIsImV4cCI6MTc2MzE0ODA2OCwiaXNzIjoiTWFuYWdlckFQSSIsImF1ZCI6Ik1hbmFnZXJDbGllbnQifQ.rPhfKnOVqaOEM--L8FPez84S-T-dWZ-X-ZPe56JttFg\",\n    \"role\": \"admin\",\n    \"userId\": 1,\n    \"name\": \"Admin\"\n}"
+						}
+					]
+				},
+				{
+					"name": "RegisterAuth",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resutado registrar",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Usuario Prueba\",\r\n  \"email\": \"usuario@gmail.com\",\r\n  \"password\": \"Pass123\",\r\n  \"role\": \"user\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_ur}}/api/auth/register",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:50:21 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"name\": \"Usuario Prueba\",\n    \"email\": \"usuario@gmail.com\",\n    \"role\": \"user\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "GetTask",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado Tareas",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_ur}}/api/tasks",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"tasks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:55:42 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"title\": \"Prueba API update 44\",\n        \"description\": \"Cambio en la descripción\",\n        \"status\": \"Pendiente\",\n        \"dueDate\": \"2026-02-01T06:00:00Z\",\n        \"assignedTo\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"createdBy\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"comments\": [\n            {\n                \"id\": 1,\n                \"content\": \"Probando comentarios desde Postman\",\n                \"createdAt\": \"2025-11-13T20:48:49.458572Z\",\n                \"userId\": 1,\n                \"userName\": \"Admin\"\n            },\n            {\n                \"id\": 3,\n                \"content\": \"Este es un comentario de prueba nuevcca\",\n                \"createdAt\": \"2025-11-13T21:10:02.32515Z\",\n                \"userId\": 1,\n                \"userName\": \"Admin\"\n            }\n        ]\n    },\n    {\n        \"id\": 2,\n        \"title\": \"Tarea\",\n        \"description\": \"Probando creacion\",\n        \"status\": \"Pendiente\",\n        \"dueDate\": \"2026-01-01T00:00:00Z\",\n        \"assignedTo\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"createdBy\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"comments\": []\n    },\n    {\n        \"id\": 3,\n        \"title\": \"Implementacion  autenticacion\",\n        \"description\": \"Pruebas\",\n        \"status\": \"Pendiente\",\n        \"dueDate\": \"2026-01-01T00:00:00Z\",\n        \"assignedTo\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"createdBy\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        },\n        \"comments\": []\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "GetIdTaaks",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado tareas por id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_ur}}/api/tasks/1",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"tasks",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:53:47 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"title\": \"Prueba API update 44\",\n    \"description\": \"Cambio en la descripción\",\n    \"status\": \"Pendiente\",\n    \"dueDate\": \"2026-02-01T06:00:00Z\",\n    \"assignedTo\": {\n        \"id\": 1,\n        \"name\": \"Admin\"\n    },\n    \"createdBy\": {\n        \"id\": 1,\n        \"name\": \"Admin\"\n    },\n    \"comments\": [\n        {\n            \"id\": 1,\n            \"content\": \"Probando comentarios desde Postman\",\n            \"createdAt\": \"2025-11-13T20:48:49.458572Z\",\n            \"userId\": 1,\n            \"userName\": \"Admin\"\n        },\n        {\n            \"id\": 3,\n            \"content\": \"Este es un comentario de prueba nuevcca\",\n            \"createdAt\": \"2025-11-13T21:10:02.32515Z\",\n            \"userId\": 1,\n            \"userName\": \"Admin\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "CreateTask",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado crear tarea",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"Implementacion  autenticacion\",\r\n  \"description\": \"Pruebas\",\r\n  \"dueDate\": \"2026-01-01T00:00:00Z\",\r\n  \"assignedToId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_ur}}/api/tasks",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"tasks"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:55:32 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"title\": \"Implementacion  autenticacion\",\n    \"description\": \"Pruebas\",\n    \"status\": \"Pendiente\",\n    \"dueDate\": \"2026-01-01T00:00:00Z\",\n    \"assignedTo\": {\n        \"id\": 1,\n        \"name\": \"Admin\"\n    },\n    \"createdBy\": {\n        \"id\": 1,\n        \"name\": \"Admin\"\n    },\n    \"comments\": []\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "AddComent",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado agregar comentario",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"content\": \"Este es un comentario de prueba nuevcca 2\",\r\n  \"taskId\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_ur}}/api/comments",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"comments"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 21:13:52 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 4,\n    \"text\": \"Este es un comentario de prueba nuevcca 2\",\n    \"createdAt\": \"2025-11-13T21:13:53.188993Z\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"Admin\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Comment por tarea",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado comentario por tarea",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_ur}}/api/comments/task/1",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"comments",
+										"task",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:29:59 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"text\": \"Probando comentarios desde Postman\",\n        \"createdAt\": \"2025-11-13T20:48:49.458572Z\",\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        }\n    },\n    {\n        \"id\": 3,\n        \"text\": \"Este es un comentario de prueba nuevcca\",\n        \"createdAt\": \"2025-11-13T21:10:02.32515Z\",\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"Admin\"\n        }\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "DeleteComent",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Resultado Eliminar comentario",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_ur}}/api/comments/4",
+									"host": [
+										"{{base_ur}}"
+									],
+									"path": [
+										"api",
+										"comments",
+										"4"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 13 Nov 2025 22:29:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Comentario eliminado\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
