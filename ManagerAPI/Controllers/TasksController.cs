@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using static ManagerAPI.DTOs.TaskResponseDto;
 
 namespace ManagerAPI.Controllers
 {
@@ -21,19 +22,78 @@ namespace ManagerAPI.Controllers
             var tasks = await _db.Tasks
                 .Include(t => t.AssignedTo)
                 .Include(t => t.CreatedBy)
+                .Include(t => t.Comments)
                 .ToListAsync();
-            return Ok(tasks);
+
+            var dtoList = tasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                DueDate = t.DueDate,
+
+                AssignedTo = t.AssignedTo == null ? null : new TaskResponseDto.SimpleUserDto
+                {
+                    Id = t.AssignedTo.Id,
+                    Name = t.AssignedTo.Name
+                },
+
+                CreatedBy = t.CreatedBy == null ? null : new TaskResponseDto.SimpleUserDto
+                {
+                    Id = t.CreatedBy.Id,
+                    Name = t.CreatedBy.Name
+                },
+
+                Comments = t.Comments?.Select(c => new TaskResponseDto.CommentDto
+                {
+                    Id = c.Id,
+                    Text = c.Content,
+                    UserId = c.UserId
+                }).ToList() ?? new List<TaskResponseDto.CommentDto>()
+            })
+            .ToList();
+
+            return Ok(dtoList);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var task = await _db.Tasks
-                .Include(t => t.Comments)
                 .Include(t => t.AssignedTo)
+                .Include(t => t.CreatedBy)
+                .Include(t => t.Comments)
                 .FirstOrDefaultAsync(t => t.Id == id);
+
             if (task == null) return NotFound();
-            return Ok(task);
+
+            var dto = new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                Status = task.Status,
+                DueDate = task.DueDate,
+                AssignedTo = task.AssignedTo == null ? null : new SimpleUserDto
+                {
+                    Id = task.AssignedTo.Id,
+                    Name = task.AssignedTo.Name
+                },
+                CreatedBy = task.CreatedBy == null ? null : new SimpleUserDto
+                {
+                    Id = task.CreatedBy.Id,
+                    Name = task.CreatedBy.Name
+                },
+                Comments = task.Comments?.Select(c => new CommentDto
+                {
+                    Id = c.Id,
+                    Text = c.Content,
+                    UserId = c.UserId
+                }).ToList()
+            };
+
+            return Ok(dto);
         }
 
         [Authorize] // any authenticated user can create
@@ -47,7 +107,7 @@ namespace ManagerAPI.Controllers
             {
                 Title = dto.Title,
                 Description = dto.Description ?? "",
-                DueDate = dto.DueDate ?? DateTime.UtcNow.AddDays(7),
+                DueDate = (dto.DueDate?.ToUniversalTime()) ?? DateTime.UtcNow.AddDays(7),
                 Status = "Pendiente",
                 CreatedById = userId,
                 AssignedToId = dto.AssignedToId ?? userId
@@ -74,7 +134,7 @@ namespace ManagerAPI.Controllers
 
             task.Title = dto.Title;
             task.Description = dto.Description ?? task.Description;
-            task.DueDate = dto.DueDate ?? task.DueDate;
+            task.DueDate = dto.DueDate?.ToUniversalTime() ?? task.DueDate;
             task.AssignedToId = dto.AssignedToId ?? task.AssignedToId;
 
             await _db.SaveChangesAsync();

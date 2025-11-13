@@ -1,6 +1,7 @@
 ﻿using ManagerAPI.Data;
 using ManagerAPI.DTOs;
 using ManagerAPI.Models;
+using ManagerAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

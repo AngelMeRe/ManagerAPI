@@ -1,4 +1,5 @@
 ﻿using ManagerAPI.Data;
+using ManagerAPI.DTOs;
 using ManagerAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,10 @@ namespace ManagerAPI.Controllers
         public CommentsController(ApplicationDbContext db) => _db = db;
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Comment dto)
+        public async Task<IActionResult> Add([FromBody] CommentCreateDto dto)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == "id").Value);
+
             var comment = new Comment
             {
                 Content = dto.Content,
@@ -24,10 +26,18 @@ namespace ManagerAPI.Controllers
                 UserId = userId,
                 CreatedAt = DateTime.UtcNow
             };
+
             _db.Comments.Add(comment);
             await _db.SaveChangesAsync();
-            return Ok(comment);
-        }
 
+            return Ok(new
+            {
+                comment.Id,
+                comment.Content,
+                comment.CreatedAt,
+                comment.TaskId,
+                comment.UserId
+            });
+        }
     }
 }
