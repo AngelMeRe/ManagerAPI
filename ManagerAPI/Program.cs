@@ -1,5 +1,6 @@
 using ManagerAPI.Data;
 using ManagerAPI.Services;
+using ManagerAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -37,7 +38,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthorization();
 
 
@@ -54,6 +57,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<JwtService>();
 
 var app = builder.Build();
+
+
+app.UseCors(builder =>
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader());
+
 
 //seed de un admin para pruebas
 using (var scope = app.Services.CreateScope())

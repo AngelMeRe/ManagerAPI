@@ -1,6 +1,7 @@
 ﻿using ManagerAPI.Data;
 using ManagerAPI.DTOs;
 using ManagerAPI.Models;
+using ManagerAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,78 +14,45 @@ namespace ManagerAPI.Controllers
     [Route("api/[controller]")]
     public class CommentsController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CommentsController(ApplicationDbContext db) => _db = db;
+        private readonly ICommentService _service;
+
+        public CommentsController(ICommentService service)
+        {
+            _service = service;
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Comment dto)
+        public async Task<IActionResult> Add([FromBody] CommentCreateDto dto)
         {
             var userId = int.Parse(User.Claims.First(c => c.Type == "id").Value);
 
-            var comment = new Comment
-            {
-                Content = dto.Content,
-                TaskId = dto.TaskId,
-                UserId = userId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            _db.Comments.Add(comment);
-            await _db.SaveChangesAsync();
-
-            // Mapear a DTO para la respuesta
-            var user = await _db.Users.FindAsync(userId);
-
-            var response = new CommentResponseDto
-            {
-                Id = comment.Id,
-                Text = comment.Content,
-                CreatedAt = comment.CreatedAt,
-                User = new CommentResponseDto.UserDto
-                {
-                    Id = user.Id,
-                    Name = user.Name
-                }
-            };
-
-            return Ok(response);
+            var result = await _service.Add(userId, dto);
+            return Ok(result);
         }
 
         [HttpGet("task/{taskId}")]
         public async Task<IActionResult> GetByTask(int taskId)
         {
-            var comments = await _db.Comments
-                .Where(c => c.TaskId == taskId)
-                .Include(c => c.User)
-                .Select(c => new CommentDto
-                {
-                    Id = c.Id,
-                    Content = c.Content,
-                    CreatedAt = c.CreatedAt,
-                    UserId = c.UserId,
-                    UserName = c.User.Name
-                })
-                .ToListAsync();
-
-            return Ok(comments);
+            var list = await _service.GetByTask(taskId);
+            return Ok(list);
         }
 
-        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var comment = await _service.GetById(id);
+            if (comment == null) return NotFound();
+            return Ok(comment);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = await _db.Comments.FindAsync(id);
-            if (comment == null) return NotFound();
-
             var userId = int.Parse(User.Claims.First(c => c.Type == "id").Value);
-            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? "user";
 
-            // Solo admin o autor pueden borrar
-            if (role != "admin" && comment.UserId != userId)
-                return Forbid();
-
-            _db.Comments.Remove(comment);
-            await _db.SaveChangesAsync();
+            var deleted = await _service.Delete(id, userId, role);
+            if (!deleted) return Forbid();
 
             return Ok(new { message = "Comentario eliminado" });
         }
