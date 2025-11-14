@@ -68,12 +68,12 @@ using (var scope = app.Services.CreateScope())
     await SeedData.EnsureSeedAsync(db);
 }
 
-// solo en desarrollo
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 // HTTPS solo local 
 if (!app.Environment.IsProduction())
