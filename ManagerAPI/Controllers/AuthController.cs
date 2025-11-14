@@ -3,6 +3,7 @@ using ManagerAPI.DTOs;
 using ManagerAPI.Models;
 using ManagerAPI.Services;
 using ManagerAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,7 @@ namespace ManagerAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserCreateDto dto)
         {
@@ -46,7 +48,6 @@ namespace ManagerAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
     }
 }
 

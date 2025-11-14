@@ -9,67 +9,58 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-//implementecion Db
+// base de datos
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//implementacion  de Jwt 
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSection["Key"]);
+// implementacion JWT 
+var jwt = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwt["Key"]);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // en local true en producción
+    options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidIssuer = jwtSection["Issuer"],
+        ValidIssuer = jwt["Issuer"],
         ValidateAudience = true,
-        ValidAudience = jwtSection["Audience"],
+        ValidAudience = jwt["Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ClockSkew = TimeSpan.Zero
     };
 });
 
+builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddAuthorization();
+builder.Services.AddScoped<UsersService>();
+builder.Services.AddSingleton<JwtService>();
 
-
-// Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//servicio de JWt
-builder.Services.AddSingleton<JwtService>();
-
 var app = builder.Build();
 
+// CORS
+app.UseCors(x =>
+    x.AllowAnyOrigin()
+     .AllowAnyMethod()
+     .AllowAnyHeader());
 
-app.UseCors(builder =>
-    builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader());
-
-//implementacion de  middlerware
+// Middlewares globales
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-//seed de un admin para pruebas
+// Seed db 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -77,18 +68,20 @@ using (var scope = app.Services.CreateScope())
     await SeedData.EnsureSeedAsync(db);
 }
 
-
-// Configure the HTTP request pipeline.
+// solo en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// HTTPS solo local 
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

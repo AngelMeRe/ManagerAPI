@@ -9,7 +9,15 @@ namespace ManagerAPI.DTOs
         public string? Description { get; set; }
         public DateTime? DueDate { get; set; }
         public int? AssignedToId { get; set; }
+        public string? Status { get; set; }
     }
-    public class TaskUpdateDto : TaskCreateDto { }
+    public class TaskUpdateDto
+    {
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public DateTime? DueDate { get; set; }
+        public int? AssignedToId { get; set; }
+        public string? Status { get; set; }
+    }
 }
 

@@ -123,13 +123,28 @@ namespace ManagerAPI.Services
             if (role != "admin" && task.CreatedById != userId && task.AssignedToId != userId)
                 throw new UnauthorizedAccessException("No tienes permisos para editar esta tarea");
 
-            task.Title = dto.Title;
-            task.Description = dto.Description ?? task.Description;
-            task.DueDate = dto.DueDate ?? task.DueDate;
-            task.AssignedToId = dto.AssignedToId ?? task.AssignedToId;
+            if (!string.IsNullOrWhiteSpace(dto.Title))
+                task.Title = dto.Title;
+
+            if (dto.Description != null)
+                task.Description = dto.Description;
+
+            if (dto.DueDate.HasValue)
+                task.DueDate = dto.DueDate.Value;
+
+            if (dto.AssignedToId.HasValue)
+                task.AssignedToId = dto.AssignedToId.Value;
+
+            if (!string.IsNullOrWhiteSpace(dto.Status))
+            {
+                var normalized = dto.Status.Trim();
+                var allowed = new[] { "Pendiente", "En Progreso", "Completada" };
+                if (!allowed.Contains(normalized, StringComparer.Ordinal))
+                    throw new ArgumentException("Estado inválido");
+                task.Status = normalized;
+            }
 
             await _db.SaveChangesAsync();
-
             return await GetById(task.Id);
         }
 
