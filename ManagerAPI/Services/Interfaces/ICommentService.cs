@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.Services.Interfaces
 {
+    // Interfaz para el servicio de comentarios
     public interface ICommentService
     {
         Task<CommentResponseDto> Add(int userId, CommentCreateDto dto);

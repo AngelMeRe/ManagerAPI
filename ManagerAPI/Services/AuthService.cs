@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManagerAPI.Services
 {
+    //Servicio de autenticación
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _db;
@@ -17,6 +18,7 @@ namespace ManagerAPI.Services
             _jwt = jwt;
         }
 
+        //Login de usuario
         public async Task<LoginResponse> Login(LoginRequest request)
         {
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -35,6 +37,7 @@ namespace ManagerAPI.Services
             };
         }
 
+        //Registro de nuevo usuario
         public async Task<UserResponseDto> Register(UserCreateDto dto)
         {
             var exists = await _db.Users.AnyAsync(u => u.Email == dto.Email);

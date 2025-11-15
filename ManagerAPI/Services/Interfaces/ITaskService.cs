@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.Services.Interfaces
 {
+    // Interfaz para el servicio de tareas
     public interface ITaskService
     {
         Task<List<TaskResponseDto>> GetAll();

@@ -6,6 +6,7 @@ namespace ManagerAPI.Data
     {
         public static async Task EnsureSeedAsync(ApplicationDbContext context)
         {
+            //sedear un usuario admin para pruebas
             if (!context.Users.Any())
             {
                 var admin = new User

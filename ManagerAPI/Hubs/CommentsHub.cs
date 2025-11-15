@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ManagerAPI.Hubs
 {
+    // Hub de SignalR para manejar comentarios
     [Authorize]
     public class CommentsHub : Hub
     {

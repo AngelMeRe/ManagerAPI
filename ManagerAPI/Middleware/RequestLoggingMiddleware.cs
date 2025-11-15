@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.Middleware
 {
+    // Middleware para registrar cada petición con datos del usuario.
     public class RequestLoggingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -13,6 +14,7 @@ namespace ManagerAPI.Middleware
             _logger = logger;
         }
 
+        //Loguea metodo, ruta, usuario y rol antes de procesar la peticion
         public async Task Invoke(HttpContext context)
         {
             var userId = context.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value ?? "anon";

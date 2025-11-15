@@ -1,5 +1,6 @@
 ﻿namespace ManagerAPI.Models
 {
+    // Modelo para usuarios
     public class User
     {
         public int Id { get; set; }

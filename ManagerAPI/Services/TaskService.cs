@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManagerAPI.Services
 {
+    // Servicio para manejar tareas
     public class TaskService : ITaskService
     {
         private readonly ApplicationDbContext _db;
@@ -15,6 +16,7 @@ namespace ManagerAPI.Services
             _db = db;
         }
 
+        //obtiene todas las tareas
         public async Task<List<TaskResponseDto>> GetAll()
         {
             var tasks = await _db.Tasks
@@ -56,6 +58,8 @@ namespace ManagerAPI.Services
             }).ToList();
         }
 
+
+        // obtiene una tarea por id
         public async Task<TaskResponseDto?> GetById(int id)
         {
             var t = await _db.Tasks
@@ -98,6 +102,8 @@ namespace ManagerAPI.Services
         }
 
 
+
+        // obtiene las tareas del usuario
         public async Task<List<TaskResponseDto>> GetMine(int userId)
         {
             var tasks = await _db.Tasks
@@ -127,6 +133,8 @@ namespace ManagerAPI.Services
             }).ToList();
         }
 
+
+        // crea una nueva tarea
         public async Task<TaskResponseDto> Create(TaskCreateDto dto, int userId)
         {
             var task = new TaskItem
@@ -178,6 +186,8 @@ namespace ManagerAPI.Services
             return await GetById(task.Id);
         }
 
+
+        // elimina una tarea 
         public async Task<bool> Delete(int id)
         {
             var task = await _db.Tasks.FindAsync(id);

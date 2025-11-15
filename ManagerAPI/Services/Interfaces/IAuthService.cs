@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.Services.Interfaces
 {
+    // Interfaz para el servicio de autenticación
     public interface IAuthService
     {
         Task<LoginResponse> Login(LoginRequest request);

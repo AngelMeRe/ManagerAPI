@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.DTOs
 {
+    // DTO para crear una nueva tarea
     public class TaskCreateDto
     {
         [Required, MaxLength(150)]
@@ -11,6 +12,8 @@ namespace ManagerAPI.DTOs
         public int? AssignedToId { get; set; }
         public string? Status { get; set; }
     }
+
+    // DTO para actualizar una tarea existente
     public class TaskUpdateDto
     {
         public string? Title { get; set; }

@@ -21,12 +21,14 @@ namespace ManagerAPI.Controllers
             _service = service;
         }
 
+        //obtener todas las tareas existentes
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _service.GetAll());
         }
 
+        //obtener una tarea por id
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -35,6 +37,7 @@ namespace ManagerAPI.Controllers
             return Ok(task);
         }
 
+        //obtener las tareas asignadas al usuario logueado
         [Authorize]
         [HttpGet("mine")]
         public async Task<IActionResult> GetMine()
@@ -43,7 +46,7 @@ namespace ManagerAPI.Controllers
             return Ok(await _service.GetMine(userId));
         }
 
-
+        //crear nueva tarea
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskCreateDto dto)
@@ -53,6 +56,7 @@ namespace ManagerAPI.Controllers
             return Ok(created);
         }
 
+        //actualizar tarea
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto dto)
@@ -67,6 +71,7 @@ namespace ManagerAPI.Controllers
             return Ok(updated);
         }
 
+        //eliminar tarea
         [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

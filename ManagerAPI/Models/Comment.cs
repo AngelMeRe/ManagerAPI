@@ -1,5 +1,6 @@
 ﻿namespace ManagerAPI.Models
 {
+    // Modelo para comentarios en tareas
     public class Comment
     {
         public int Id { get; set; }

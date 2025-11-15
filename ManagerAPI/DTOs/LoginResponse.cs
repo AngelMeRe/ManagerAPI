@@ -1,5 +1,6 @@
 ﻿namespace ManagerAPI.DTOs
 {
+    // DTO para manejar las respuestas de inicio de sesion
     public class LoginResponse
     {
         public string Token { get; set; } = "";

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManagerAPI.Services
 {
+    // Servicio para manejar usuarios
     public class UsersService
     {
         private readonly ApplicationDbContext _db;
@@ -23,6 +24,8 @@ namespace ManagerAPI.Services
                 .ToListAsync();
         }
 
+
+        // Obtiene un usuario por su ID
         public async Task<UserResponseDto?> GetById(int id)
         {
             var u = await _db.Users.FindAsync(id);
@@ -37,6 +40,7 @@ namespace ManagerAPI.Services
             };
         }
 
+        // Crea un nuevo usuario
         public async Task<UserResponseDto> Create(UserCreateDto dto)
         {
             if (await _db.Users.AnyAsync(x => x.Email == dto.Email))
@@ -59,6 +63,8 @@ namespace ManagerAPI.Services
             return await GetById(user.Id) ?? throw new Exception("No se pudo crear el usuario");
         }
 
+
+        // Actualiza usuario
         public async Task<UserResponseDto?> Update(int id, UserUpdateDto dto)
         {
             var u = await _db.Users.FindAsync(id);
@@ -78,6 +84,7 @@ namespace ManagerAPI.Services
             return await GetById(u.Id);
         }
 
+        // Elimina usuarriop
         public async Task<bool> Delete(int id)
         {
             var u = await _db.Users.FindAsync(id);

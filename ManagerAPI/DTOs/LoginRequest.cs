@@ -2,6 +2,7 @@
 
 namespace ManagerAPI.DTOs
 {
+    //DTO para manejar las solicitudes de inicio de sesión
     public class LoginRequest
     {
         [Required, EmailAddress]

@@ -21,6 +21,7 @@ namespace ManagerAPI.Controllers
             _service = service;
         }
 
+        //crear nuevo comentario en una tarea
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] CommentCreateDto dto)
         {
@@ -30,6 +31,7 @@ namespace ManagerAPI.Controllers
             return Ok(result);
         }
 
+        //traer todos los comentarios de una tarea en especifico
         [HttpGet("task/{taskId}")]
         public async Task<IActionResult> GetByTask(int taskId)
         {
@@ -37,6 +39,7 @@ namespace ManagerAPI.Controllers
             return Ok(list);
         }
 
+        //obtener un comentario por id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -45,6 +48,7 @@ namespace ManagerAPI.Controllers
             return Ok(comment);
         }
 
+        //eliminar comentario 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

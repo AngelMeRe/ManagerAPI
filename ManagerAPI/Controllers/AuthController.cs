@@ -20,6 +20,7 @@ namespace ManagerAPI.Controllers
             _authService = authService;
         }
 
+        //Login de usuarios, genera JWT
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
@@ -34,6 +35,7 @@ namespace ManagerAPI.Controllers
             }
         }
 
+        //Registro de usuarios solo lo puede hacer el rol admin
         [Authorize(Roles = "admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserCreateDto dto)

@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS
+// CORS politicas para el fontend
 var corsPolicy = "FrontendPolicy";
 builder.Services.AddCors(options =>
 {
@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://localhost:5174",
+                "http://localhost:5173",
                 "https://tu-frontend-prod.com"
             )
             .AllowAnyHeader()
@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// DB
+// Configuracion de la base de datos PostgreSql
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -53,31 +53,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+//registrso de servicios
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddSingleton<JwtService>();
 
+
+// Habilitar SignalR para comunicación en tiempo real
 builder.Services.AddSignalR();
 
+// Controladores y opciones JSON
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
+// Swagger 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// CORS antes de endpoints
+// CORS 
 app.UseCors(corsPolicy);
 
 // Middlewares globales
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-// Seed
+// Seedeo de daros y migraciones
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -88,6 +93,7 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Configuración para Render
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
 

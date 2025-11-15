@@ -1,5 +1,6 @@
 ﻿namespace ManagerAPI.Models
 {
+    // Modelo para tareas
     public class TaskItem
     {
         public int Id { get; set; }

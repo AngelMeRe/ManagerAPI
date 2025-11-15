@@ -1,7 +1,9 @@
 ﻿namespace ManagerAPI.DTOs
 {
+    // DTO para mostrar informacion completa de un comentario
     public class CommentResponseDto
     {
+        
         public int Id { get; set; }
         public string Text { get; set; } = "";
         public DateTime CreatedAt { get; set; }

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace ManagerAPI.Services
 {
+    // Servicio para generar tokens JWT
     public class JwtService
     {
         private readonly IConfiguration _config;

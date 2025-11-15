@@ -1,5 +1,6 @@
 ﻿namespace ManagerAPI.DTOs
 {
+    // DTO para manejar las respuestas de las tareas
     public class TaskResponseDto
     {
         public int Id { get; set; }
@@ -13,6 +14,7 @@
 
         public List<CommentDto>? Comments { get; set; }
 
+        // DTO para representar un comentario asociado a la tarea
         public class SimpleUserDto
         {
             public int Id { get; set; }

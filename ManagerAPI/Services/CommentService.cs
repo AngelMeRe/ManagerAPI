@@ -8,19 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManagerAPI.Services
 {
+    // Servicio para manejar comentarios
     public class CommentService : ICommentService
     {
 
         private readonly ApplicationDbContext _db;
         private readonly IHubContext<CommentsHub> _hub;
 
-        // IMPORTANTE: inyecta IHubContext<CommentsHub>, no CommentsHub
+        
         public CommentService(ApplicationDbContext db, IHubContext<CommentsHub> hub)
         {
             _db = db;
             _hub = hub;
         }
 
+        // Agrega un nuevo comentario y notifica en tiempo real a los usuarios
         public async Task<CommentResponseDto> Add(int userId, CommentCreateDto dto)
         {
             var comment = new Comment
@@ -48,14 +50,13 @@ namespace ManagerAPI.Services
                 }
             };
 
-            // Emite en tiempo real a los clientes suscritos al grupo de la tarea
-            // El cliente debe unirse al grupo "task-{taskId}"
             await _hub.Clients.Group($"task-{dto.TaskId}")
                 .SendAsync("commentAdded", payload);
 
             return payload;
         }
 
+        //obtener comentarios por tarea
         public async Task<List<CommentResponseDto>> GetByTask(int taskId)
         {
             var comments = await _db.Comments
@@ -76,6 +77,7 @@ namespace ManagerAPI.Services
             }).ToList();
         }
 
+        // Obtener un comentario por su ID
         public async Task<CommentResponseDto?> GetById(int id)
         {
             var c = await _db.Comments.Include(x => x.User).FirstOrDefaultAsync(c => c.Id == id);
@@ -94,6 +96,7 @@ namespace ManagerAPI.Services
             };
         }
 
+        // Elimina un comentario si tiene rol admin 
         public async Task<bool> Delete(int id, int userId, string role)
         {
             var c = await _db.Comments.FindAsync(id);

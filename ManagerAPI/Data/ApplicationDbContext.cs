@@ -8,6 +8,7 @@ namespace ManagerAPI.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
           : base(options) { }
 
+        //tablas de la bd
         public DbSet<User> Users { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -15,6 +16,7 @@ namespace ManagerAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Forza que todos los DateTime se guarden en UTC
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties()
@@ -28,14 +30,14 @@ namespace ManagerAPI.Data
             }
                 base.OnModelCreating(modelBuilder);
 
-            // Relación: TaskItem -> AssignedTo (Usuario asignado)
+            //Relacion de TaskItem a usuario asignado
             modelBuilder.Entity<TaskItem>()
                 .HasOne(t => t.AssignedTo)
                 .WithMany(u => u.AssignedTasks)
                 .HasForeignKey(t => t.AssignedToId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Relación: TaskItem -> CreatedBy (Usuario creador)
+            //Relacion de TaskItem a usuario creador
             modelBuilder.Entity<TaskItem>()
                 .HasOne(t => t.CreatedBy)
                 .WithMany(u => u.CreatedTasks)
