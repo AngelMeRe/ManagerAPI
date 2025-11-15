@@ -97,6 +97,36 @@ namespace ManagerAPI.Services
             };
         }
 
+
+        public async Task<List<TaskResponseDto>> GetMine(int userId)
+        {
+            var tasks = await _db.Tasks
+                .Include(t => t.AssignedTo)
+                .Include(t => t.CreatedBy)
+                .Include(t => t.Comments).ThenInclude(c => c.User)
+                .Where(t => t.AssignedToId == userId || t.CreatedById == userId)
+                .ToListAsync();
+
+            return tasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                DueDate = t.DueDate,
+                AssignedTo = t.AssignedTo == null ? null : new TaskResponseDto.SimpleUserDto { Id = t.AssignedTo.Id, Name = t.AssignedTo.Name },
+                CreatedBy = t.CreatedBy == null ? null : new TaskResponseDto.SimpleUserDto { Id = t.CreatedBy.Id, Name = t.CreatedBy.Name },
+                Comments = t.Comments.Select(c => new CommentDto
+                {
+                    Id = c.Id,
+                    Content = c.Content,
+                    CreatedAt = c.CreatedAt,
+                    UserId = c.UserId,
+                    UserName = c.User.Name
+                }).ToList()
+            }).ToList();
+        }
+
         public async Task<TaskResponseDto> Create(TaskCreateDto dto, int userId)
         {
             var task = new TaskItem

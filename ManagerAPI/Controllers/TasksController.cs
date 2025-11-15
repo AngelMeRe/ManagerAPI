@@ -36,6 +36,15 @@ namespace ManagerAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet("mine")]
+        public async Task<IActionResult> GetMine()
+        {
+            var userId = int.Parse(User.Claims.First(c => c.Type == "id").Value);
+            return Ok(await _service.GetMine(userId));
+        }
+
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskCreateDto dto)
         {
