@@ -42,6 +42,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddSingleton<JwtService>();
 
+builder.Services.AddSignalR();
+
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
@@ -61,8 +63,8 @@ app.UseCors(x =>
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-builder.Services.AddSignalR();
-app.MapHub<CommentsHub>("/hubs/comments");
+
+
 
 // Seed db 
 using (var scope = app.Services.CreateScope())
@@ -88,4 +90,7 @@ if (!app.Environment.IsProduction())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+
+app.MapHub<CommentsHub>("/hubs/comments");
 app.Run();
