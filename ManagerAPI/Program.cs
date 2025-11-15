@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:5173",
-                "https://tu-frontend-prod.com"
+                "https://managerfrontend-yibm.vercel.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
