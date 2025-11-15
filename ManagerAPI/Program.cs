@@ -10,14 +10,30 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// base de datos
+// CORS
+var corsPolicy = "FrontendPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicy, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://tu-frontend-prod.com"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+// DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// implementacion JWT 
+// JWT
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwt["Key"]);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -36,6 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -53,20 +70,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// CORS
-app.UseCors(x =>
-    x.AllowAnyOrigin()
-     .AllowAnyMethod()
-     .AllowAnyHeader());
+// CORS antes de endpoints
+app.UseCors(corsPolicy);
 
 // Middlewares globales
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
-
-
-
-// Seed db 
+// Seed
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -78,10 +89,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-
 app.Urls.Add($"http://0.0.0.0:{port}");
 
-// HTTPS solo local 
 if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
@@ -89,8 +98,9 @@ if (!app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 
+// Endpoints con CORS aplicado
+app.MapControllers().RequireCors(corsPolicy);
+app.MapHub<CommentsHub>("/hubs/comments").RequireCors(corsPolicy);
 
-app.MapHub<CommentsHub>("/hubs/comments");
 app.Run();
