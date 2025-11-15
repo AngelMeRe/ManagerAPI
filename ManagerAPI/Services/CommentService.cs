@@ -1,18 +1,24 @@
 ﻿using ManagerAPI.Data;
 using ManagerAPI.DTOs;
+using ManagerAPI.Hubs;
 using ManagerAPI.Models;
 using ManagerAPI.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ManagerAPI.Services
 {
     public class CommentService : ICommentService
     {
-        private readonly ApplicationDbContext _db;
 
-        public CommentService(ApplicationDbContext db)
+        private readonly ApplicationDbContext _db;
+        private readonly IHubContext<CommentsHub> _hub;
+
+        // IMPORTANTE: inyecta IHubContext<CommentsHub>, no CommentsHub
+        public CommentService(ApplicationDbContext db, IHubContext<CommentsHub> hub)
         {
             _db = db;
+            _hub = hub;
         }
 
         public async Task<CommentResponseDto> Add(int userId, CommentCreateDto dto)
@@ -30,7 +36,7 @@ namespace ManagerAPI.Services
 
             var user = await _db.Users.FindAsync(userId);
 
-            return new CommentResponseDto
+            var payload = new CommentResponseDto
             {
                 Id = comment.Id,
                 Text = comment.Content,
@@ -41,6 +47,13 @@ namespace ManagerAPI.Services
                     Name = user.Name
                 }
             };
+
+            // Emite en tiempo real a los clientes suscritos al grupo de la tarea
+            // El cliente debe unirse al grupo "task-{taskId}"
+            await _hub.Clients.Group($"task-{dto.TaskId}")
+                .SendAsync("commentAdded", payload);
+
+            return payload;
         }
 
         public async Task<List<CommentResponseDto>> GetByTask(int taskId)

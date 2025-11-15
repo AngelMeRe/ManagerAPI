@@ -1,4 +1,5 @@
 using ManagerAPI.Data;
+using ManagerAPI.Hubs;
 using ManagerAPI.Middleware;
 using ManagerAPI.Services;
 using ManagerAPI.Services.Interfaces;
@@ -44,7 +45,8 @@ builder.Services.AddSingleton<JwtService>();
 builder.Services.AddControllers()
     .AddJsonOptions(x =>
         x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
-
+builder.Services.AddSignalR();
+app.MapHub<CommentsHub>("/hubs/comments");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
